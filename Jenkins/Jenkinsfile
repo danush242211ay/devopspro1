@@ -12,5 +12,29 @@ pipeline{
                 git branch: 'main', url: 'https://github.com/danush242211ay/devopspro1.git'
             }
         }
+        stage('Compile'){
+            steps{
+                sh 'mvn compile'
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'mvn clean install'
+            }
+        }
+        stage('Build and tag'){
+            steps{
+                sh "docker build -t danu/test:1 ."
+            }
+        }
+        stage('containersation'){
+            steps{
+                sh '''
+                    docker stop c1
+                    docker rm c1
+                    docker run -it -d --name c1 -p 9001:8080 danu/test:1
+                ''' 
+            }   
+        }
     }
 }
