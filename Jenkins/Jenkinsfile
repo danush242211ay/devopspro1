@@ -3,7 +3,7 @@ pipeline{
 
     tools{
         jdk 'java-11'
-        maven 'Maven'
+        maven 'maven'
     }
 
     stages{
@@ -24,15 +24,15 @@ pipeline{
         }
         stage('Build and tag'){
             steps{
-                sh "docker build -t danu/test:1 ."
+                sh "docker build -t danu8747/test:1 ."
             }
         }
         stage('containersation'){
             steps{
                 sh '''
-                    docker stop c1
-                    docker rm c1
-                    docker run -it -d --name c1 -p 9001:8080 danu/test:1
+                    docker stop c1 || true
+                    docker rm c1 || true
+                    docker run -it -d --name c1 -p 9001:8080 danu8747/test:1
                 ''' 
             }   
         }
