@@ -29,7 +29,15 @@ pipeline{
         }
         stage('Docker image scan'){
             steps{
-                 sh "trivy image --format table -o trivy-image-report.html danu8747/test:1"
+            sh '''
+            mkdir -p /var/lib/jenkins/tmp
+            export TMPDIR=/var/lib/jenkins/tmp
+
+            trivy image \
+            --format table \
+            -o trivy-image-report.html \
+            danu8747/test:1
+            '''
             }
         }
         stage('containersation'){
