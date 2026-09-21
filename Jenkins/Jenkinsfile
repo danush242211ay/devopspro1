@@ -27,6 +27,11 @@ pipeline{
                 sh "docker build -t danu8747/test:1 ."
             }
         }
+        stage('Docker image scan'){
+            steps{
+                 sh "trivy image --format table -o trivy-image-report.html danu8747/test:1"
+            }
+        }
         stage('containersation'){
             steps{
                 sh '''
@@ -35,6 +40,20 @@ pipeline{
                     docker run -it -d --name c1 -p 9001:8080 danu8747/test:1
                 ''' 
             }   
+        }
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    }
+                }
+            }
+        }
+        stage('Pushing image to repository'){
+            steps{
+                sh 'docker push danu8747/test:1'
+            }
         }
     }
 }
